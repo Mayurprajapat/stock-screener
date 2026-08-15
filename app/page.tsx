@@ -30,7 +30,7 @@ export default function Home() {
         style={{ padding: "8px", marginBottom: "16px", width: "250px" }}
       />
 
-      <DataGrid data={filteredStocks.slice(0, 100)} />
+      <DataGrid data={filteredStocks} />
     </main>
   );
 }
