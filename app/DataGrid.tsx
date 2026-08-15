@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { Stock } from "./mockData";
+import { useStockStore } from "./store";
 
 const columnHelper = createColumnHelper<Stock>();
 
@@ -36,6 +37,7 @@ const columns = [
 
 export default function DataGrid({ data }: { data: Stock[] }) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const setSelectedSymbol = useStockStore((state) => state.setSelectedSymbol);
 
   const table = useReactTable({
     data,
@@ -71,7 +73,11 @@ export default function DataGrid({ data }: { data: Stock[] }) {
       </thead>
       <tbody>
         {table.getRowModel().rows.map((row) => (
-          <tr key={row.id}>
+          <tr
+            key={row.id}
+            onClick={() => setSelectedSymbol(row.original.symbol)}
+            style={{ cursor: "pointer" }}
+          >
             {row.getVisibleCells().map((cell) => (
               <td key={cell.id} style={{ border: "1px solid #ddd", padding: "8px" }}>
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
