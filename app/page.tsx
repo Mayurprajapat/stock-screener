@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import DataGrid from "./DataGrid";
+import FilterPanel from "./FilterPanel";
 import { generateMockStocks } from "./mockData";
 import { useStockStore } from "./store";
 
@@ -11,10 +12,17 @@ export default function Home() {
   const search = useStockStore((state) => state.search);
   const setSearch = useStockStore((state) => state.setSearch);
   const selectedSymbol = useStockStore((state) => state.selectedSymbol);
+  const selectedSectors = useStockStore((state) => state.selectedSectors);
+  const minMarketCap = useStockStore((state) => state.minMarketCap);
 
-  const filteredStocks = allStocks.filter((stock) =>
-    stock.symbol.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredStocks = allStocks.filter((stock) => {
+    const matchesSearch = stock.symbol.toLowerCase().includes(search.toLowerCase());
+    const matchesSector =
+      selectedSectors.length === 0 || selectedSectors.includes(stock.sector);
+    const matchesMarketCap = stock.marketCap >= minMarketCap;
+
+    return matchesSearch && matchesSector && matchesMarketCap;
+  });
 
   return (
     <main style={{ padding: "20px" }}>
@@ -30,7 +38,12 @@ export default function Home() {
         style={{ padding: "8px", marginBottom: "16px", width: "250px" }}
       />
 
-      <DataGrid data={filteredStocks} />
+      <div style={{ display: "flex", gap: "16px" }}>
+        <FilterPanel />
+        <div style={{ flex: 1 }}>
+          <DataGrid data={filteredStocks} />
+        </div>
+      </div>
     </main>
   );
 }
