@@ -3,6 +3,7 @@
 import { useState } from "react";
 import DataGrid from "./DataGrid";
 import FilterPanel from "./FilterPanel";
+import StockChart from "./StockChart";
 import { generateMockStocks } from "./mockData";
 import { useStockStore } from "./store";
 
@@ -24,11 +25,11 @@ export default function Home() {
     return matchesSearch && matchesSector && matchesMarketCap;
   });
 
+  const selectedStock = allStocks.find((s) => s.symbol === selectedSymbol);
+
   return (
     <main style={{ padding: "20px" }}>
       <h1>Stock Screener ({filteredStocks.length} stocks)</h1>
-
-      {selectedSymbol && <p>Selected: {selectedSymbol}</p>}
 
       <input
         type="text"
@@ -44,6 +45,12 @@ export default function Home() {
           <DataGrid data={filteredStocks} />
         </div>
       </div>
+
+      {selectedStock && (
+        <div style={{ marginTop: "20px" }}>
+          <StockChart symbol={selectedStock.symbol} price={selectedStock.price} />
+        </div>
+      )}
     </main>
   );
 }
